@@ -13,7 +13,7 @@ after_success:
 before_deploy:
   - export DEPLOYED_FILE=$(target/release-test-jar-with-dependencies.jar)
   - echo "deploying ${DEPLOYED_FILE} to GitHub releases"
-  - sudo chown travis ${DEPLOYED_FILE}
+#  - sudo chown travis ${DEPLOYED_FILE}
 #  - "cp target/release-test-jar-with-dependencies.jar target/release-test.jar"
 #  # Set up git user name and tag this commit
 #  - git config --local user.name "pintergreg"
