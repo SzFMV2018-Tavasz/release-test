@@ -11,7 +11,7 @@ after_success:
   # create single-jar build
   - mvn clean compile assembly:single
 before_deploy:
-  - export DEPLOYED_FILE=$(target/release-test-jar-with-dependencies.jar)
+  - export DEPLOYED_FILE=target/release-test-jar-with-dependencies.jar
   - echo "deploying ${DEPLOYED_FILE} to GitHub releases"
 #  - sudo chown travis ${DEPLOYED_FILE}
 #  - "cp target/release-test-jar-with-dependencies.jar target/release-test.jar"
