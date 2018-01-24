@@ -5,17 +5,16 @@ jdk:
 # Define OS image for TravisCI to use: Ubuntu 14.04 LTS (Trusty Tahr)
 dist: trusty
 # install necessary tools for code coverage reporters
-after_success:
-  # the actual testing and reporting
-  - mvn clean test jacoco:report
-  # generate Javadoc
-  - mvn javadoc:javadoc
-  # publish Javadoc
-  - "chmod +x .publish_javadoc.sh"
-  - "$TRAVIS_BUILD_DIR/.publish_javadoc.sh"
+#after_success:
+#  # the actual testing
+#  - mvn clean test
 before_deploy:
   - "echo 'ready?'"
   - "cp target/release-test-jar-with-dependencies.jar target/release-test.jar"
+  # Set up git user name and tag this commit
+  - git config --local user.name "pintergreg"
+  - git config --local user.email "pinter.gergo@vipmail.hu"
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
 deploy:
   provider: releases
   api_key:
