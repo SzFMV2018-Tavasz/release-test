@@ -5,16 +5,20 @@ jdk:
 # Define OS image for TravisCI to use: Ubuntu 14.04 LTS (Trusty Tahr)
 dist: trusty
 # install necessary tools for code coverage reporters
-#after_success:
-#  # the actual testing
-#  - mvn clean test
+after_success:
+  # the actual testing
+  - mvn clean test
+  # create single-jar build
+  - mvn clean compile assembly:single
 before_deploy:
   - "echo 'ready?'"
   - "cp target/release-test-jar-with-dependencies.jar target/release-test.jar"
-  # Set up git user name and tag this commit
-  - git config --local user.name "pintergreg"
-  - git config --local user.email "pinter.gergo@vipmail.hu"
-  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+#  # Set up git user name and tag this commit
+#  - git config --local user.name "pintergreg"
+#  - git config --local user.email "pinter.gergo@vipmail.hu"
+#  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  # If no tag is set, deploy as nightly
+  - if [ !${TRAVIS_TAG} ] ; then export TRAVIS_TAG=Nightly ; fi
 deploy:
   provider: releases
   api_key:
