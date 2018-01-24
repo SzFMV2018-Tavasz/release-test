@@ -8,8 +8,8 @@ dist: trusty
 after_success:
   # the actual testing
   - mvn clean test
-  - "chmod +x .release_nightly.sh"
-  - "$TRAVIS_BUILD_DIR/.release_nightly.sh"
+  - "chmod +x release_nightly.sh"
+  - "$TRAVIS_BUILD_DIR/release_nightly.sh"
   # create single-jar build
 #  - mvn clean compile assembly:single
 
