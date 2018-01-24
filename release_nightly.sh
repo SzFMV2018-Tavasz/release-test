@@ -6,9 +6,11 @@
 
   git config --global user.email "travis@travis-ci.org"
   git config --global user.name "travis-ci"
-  git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  tag="$(date +'%Y-%m-%d %H:%M:%S')-$(git log --format=%h -1)"
 
-  git push origin Nightly
+  git tag $tag
+
+  git push origin $tag
 
   echo -e "release added\n"
 #fi
