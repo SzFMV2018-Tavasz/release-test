@@ -5,13 +5,14 @@ jdk:
 # Define OS image for TravisCI to use: Ubuntu 14.04 LTS (Trusty Tahr)
 dist: trusty
 # install necessary tools for code coverage reporters
+before_install:
+  - gem install rest-client
 after_success:
   # the actual testing
   - mvn clean test
+  # create single-jar build
   - "chmod +x release_nightly.sh"
   - "$TRAVIS_BUILD_DIR/release_nightly.sh"
-  # create single-jar build
-#  - mvn clean compile assembly:single
 
 #before_deploy:
 #  - export DEPLOYED_FILE=target/release-test-jar-with-dependencies.jar
