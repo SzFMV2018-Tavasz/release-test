@@ -17,7 +17,7 @@ def create_release
 end
 
 begin
-    get = JSON.parse(RestClient.get "https://api.github.com/repos/#{$owner}/#{$repo}/releases/tags/#{$tag}")
+    get = JSON.parse(RestClient.get "https://api.github.com/repos/#{$owner}/#{$repo}/releases/tags/#{$tag}?access_token=#{$GH_TOKEN}")
     
     # create new build only if the last commit differs
     if get["body"].include? $commit then
