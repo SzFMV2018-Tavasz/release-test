@@ -6,11 +6,10 @@
   cd $HOME
   # git config --global user.email "travis@travis-ci.org"
   # git config --global user.name "travis-ci"
-  git clone --quiet --branch=master https://jartenmaa:${GH_TOKEN}@github.com/SzFMV2018-Tavasz/release-test master > /dev/null
+  git clone --quiet --branch=master "https://jartenmaa:$GH_TOKEN@github.com/SzFMV2018-Tavasz/release-test" master > /dev/null
 
   cd master
-  git remote rm origin
-  git remote add origin https://jartenmaa:${GH_TOKEN}@github.com/SzFMV2018-Tavasz/release-test.git
+  git remote set-url origin "https://jartenmaa:$GH_TOKEN@github.com/SzFMV2018-Tavasz/release-test.git" > /dev/null
   git tag -d nightly
   git push origin :refs/tags/nightly
   
