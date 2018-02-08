@@ -1,48 +1,57 @@
 require 'rest-client'
 require 'json'
 
+def create_release
+    release_msg = "Nightly build based on #{$commit} at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}"
+    response = JSON.parse(RestClient.post "https://api.github.com/repos/#{$owner}/#{$repo}/releases?access_token=#{$GH_TOKEN}", {tag_name: $tag, target_commitish: "master", name: "nightly", body: release_msg, draft: false, prerelease: true}.to_json)
+    
+    RestClient::Request.execute(method: :post, url: response["upload_url"][0..-14] + "?name='#{$filename_label}'&label=Single runnable jar&access_token=#{$GH_TOKEN}", payload: File.new($filename, "rb"), headers: {'Content-Type': 'application/zip'})
+    
+    puts "release added"
+end
+
+# set variables
 $owner = "SzFMV2018-Tavasz"
 $repo = "release-test"
 $tag = "nightly"
-$filename = ENV["HOME"] + "/release-test.jar"
-# $filename = "./target/release-test.jar"
+$filename = "./target/release-test.jar"
 $filename_label="release-test.jar"
-$GH_TOKEN = ARGV[0]
-$commit = %x(git log --format=%H -1)
-$release_msg = "Nightly build based on #{$commit} at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}"
+$GH_TOKEN = ENV["GH_TOKEN"]
+$commit = %x(git log --format=%H -1) # this gives the full commit hash, %h is the short
+$user_email = ENV["USER_EMAIL"] # set through Travis
+$user_name = ENV["USER_NAME"] # set through Travis
 
-def create_release
-    response = JSON.parse(RestClient.post "https://api.github.com/repos/#{$owner}/#{$repo}/releases?access_token=#{$GH_TOKEN}", {tag_name: $tag, target_commitish: "master", name: "nightly", body: $release_msg, draft: false, prerelease: true}.to_json)
-    
-    RestClient::Request.execute(method: :post, url: response["upload_url"][0..-14] + "?name='#{$filename_label}'&label=Single runnable jar&access_token=#{$GH_TOKEN}", payload: File.new($filename, "rb"), headers: {'Content-Type': 'application/zip'})
+%x(cd #{ENV["HOME"]})
+%x(git clone --quiet "https://#{ENV["USER_NAME"]}:#{ENV["GH_TOKEN"]}@github.com/#{$owner}/#{$repo}" master > /dev/null)
+%x(cd master)
+%x(git config user.email "#{ENV["USER_EMAIL"]}")
+%x(git config user.name "#{ENV["USER_NAME"]}")
+
+# build
+puts "deleting previous release..."
+exit_code = system "mvn clean compile assembly:single"
+if exit_code == false then
+    puts "The build has failed!"
+    exit false
 end
 
 begin
+    puts "deleting previous release..."
+    # delete release
     get = JSON.parse(RestClient.get "https://api.github.com/repos/#{$owner}/#{$repo}/releases/tags/#{$tag}?access_token=#{$GH_TOKEN}")
     RestClient.delete "https://api.github.com/repos/#{$owner}/#{$repo}/releases/#{get["id"]}?access_token=#{$GH_TOKEN}"
     
-    # %x(git tag -d #{$tag})
-    # %x(git push origin :refs/tags/#{$tag})
+    # delete tag: deleting the GitHub release will not delete the tag on which the release is based
+    %x(git tag -d #{$tag})
+    %x(git push -q origin :refs/tags/#{$tag} > /dev/null)
     
-    # latest = JSON.parse(RestClient.get "https://api.github.com/repos/#{$owner}/#{$repo}/git/refs/heads/master")
-    
-    # create new build only if the last commit differs
-    # if get["body"].include? $commit then
-    # if get["body"].include? latest["object"]["sha"] then
-        # puts "No changes from the last nightly build"
-    # else
-        # RestClient::Request.execute(method: :delete, url: "https://api.github.com/repos/#{$owner}/#{$repo}/releases/#{get["id"]}?access_token=#{$GH_TOKEN}")
-        create_release
-    # end
+    # creating a release seems to create a tag first...
+    create_release
 rescue RestClient::ExceptionWithResponse => err
     case err.http_code
-    when 404 # if there was no release with the given name
+    when 404 # if there was no release with the given name, this is the first time this script is run in a repository
         create_release
     else
         raise
     end
-end
-
-if ENV["GH_TOKEN"].nil? || ENV["GH_TOKEN"].empty? then
-    puts "GH_TOKEN is not set"
 end

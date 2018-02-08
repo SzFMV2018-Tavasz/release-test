@@ -11,8 +11,9 @@ after_success:
   # the actual testing
   - mvn clean test
   # create single-jar build
-  - "chmod +x release_nightly.sh"
-  - "$TRAVIS_BUILD_DIR/release_nightly.sh"
+  # - "chmod +x release_nightly.sh"
+  # - "$TRAVIS_BUILD_DIR/release_nightly.sh"
+  - ruby release_nightly.rb
 
 #before_deploy:
 #  - export DEPLOYED_FILE=target/release-test-jar-with-dependencies.jar
