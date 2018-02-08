@@ -18,17 +18,21 @@ end
 
 begin
     get = JSON.parse(RestClient.get "https://api.github.com/repos/#{$owner}/#{$repo}/releases/tags/#{$tag}?access_token=#{$GH_TOKEN}")
+    RestClient.delete "https://api.github.com/repos/#{$owner}/#{$repo}/releases/#{get["id"]}?access_token=#{$GH_TOKEN}"
+    
+    # %x(git tag -d #{$tag})
+    # %x(git push origin :refs/tags/#{$tag})
     
     # latest = JSON.parse(RestClient.get "https://api.github.com/repos/#{$owner}/#{$repo}/git/refs/heads/master")
     
     # create new build only if the last commit differs
-    if get["body"].include? $commit then
+    # if get["body"].include? $commit then
     # if get["body"].include? latest["object"]["sha"] then
-        puts "No changes from the last nightly build"
-    else
-        RestClient::Request.execute(method: :delete, url: "https://api.github.com/repos/#{$owner}/#{$repo}/releases/#{get["id"]}?access_token=#{$GH_TOKEN}")
+        # puts "No changes from the last nightly build"
+    # else
+        # RestClient::Request.execute(method: :delete, url: "https://api.github.com/repos/#{$owner}/#{$repo}/releases/#{get["id"]}?access_token=#{$GH_TOKEN}")
         create_release
-    end
+    # end
 rescue RestClient::ExceptionWithResponse => err
     case err.http_code
     when 404 # if there was no release with the given name
