@@ -35,6 +35,9 @@ Dir.chdir(ENV["HOME"] + "/master"){
         puts "The build has failed!"
         exit false
     end
+    %x(ls)
+    %x(mvn clean compile assembly:single)
+    %x(ls)
 
     begin
         puts "deleting previous release..."
