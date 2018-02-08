@@ -14,7 +14,7 @@ end
 $owner = "SzFMV2018-Tavasz"
 $repo = "release-test"
 $tag = "nightly"
-$filename = ENV["HOME"] + "/master/target/release-test.jar"
+$filename = "./target/release-test-jar-with-dependencies.jar"
 $filename_label="release-test.jar"
 $GH_TOKEN = ENV["GH_TOKEN"]
 $commit = %x(git log --format=%H -1) # this gives the full commit hash, %h is the short
@@ -35,9 +35,6 @@ Dir.chdir(ENV["HOME"] + "/master"){
         puts "The build has failed!"
         exit false
     end
-    puts %x(ls)
-    puts %x(mvn clean compile assembly:single)
-    puts %x(ls target/)
 
     begin
         puts "deleting previous release..."
