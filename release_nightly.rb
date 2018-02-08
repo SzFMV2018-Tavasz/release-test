@@ -7,7 +7,7 @@ $tag = "nightly"
 $filename = "./target/release-test.jar"
 $filename_label="release-test.jar"
 $GH_TOKEN = ARGV[0]
-$commit = %x(git log --format=%h -1)
+$commit = %x(git log --format=%H -1)
 $release_msg = "Nightly build based on #{$commit} at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}"
 
 def create_release
@@ -19,8 +19,11 @@ end
 begin
     get = JSON.parse(RestClient.get "https://api.github.com/repos/#{$owner}/#{$repo}/releases/tags/#{$tag}?access_token=#{$GH_TOKEN}")
     
+    # latest = JSON.parse(RestClient.get "https://api.github.com/repos/#{$owner}/#{$repo}/git/refs/heads/master")
+    
     # create new build only if the last commit differs
     if get["body"].include? $commit then
+    # if get["body"].include? latest["object"]["sha"] then
         puts "No changes from the last nightly build"
     else
         RestClient::Request.execute(method: :delete, url: "https://api.github.com/repos/#{$owner}/#{$repo}/releases/#{get["id"]}?access_token=#{$GH_TOKEN}")
