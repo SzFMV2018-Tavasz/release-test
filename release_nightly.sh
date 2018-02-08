@@ -6,7 +6,7 @@
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
   git config --global user.name "travis-ci"
-  git clone --quiet --branch=master https://${GH_TOKEN}@github.com/SzFMV2018-Tavasz/AutomatedCar master > /dev/null
+  git clone --quiet --branch=master https://${GH_TOKEN}@github.com/SzFMV2018-Tavasz/release-test master > /dev/null
 
   cd master
   git tag -d nightly
