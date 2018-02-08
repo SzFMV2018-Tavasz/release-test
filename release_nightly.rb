@@ -4,7 +4,8 @@ require 'json'
 $owner = "SzFMV2018-Tavasz"
 $repo = "release-test"
 $tag = "nightly"
-$filename = "./target/release-test.jar"
+$filename = ENV["HOME"] + "/release-test.jar"
+# $filename = "./target/release-test.jar"
 $filename_label="release-test.jar"
 $GH_TOKEN = ARGV[0]
 $commit = %x(git log --format=%H -1)
@@ -40,4 +41,8 @@ rescue RestClient::ExceptionWithResponse => err
     else
         raise
     end
+end
+
+if ENV["GH_TOKEN"].nil? || ENV["GH_TOKEN"].empty? then
+    puts "GH_TOKEN is not set"
 end

@@ -3,12 +3,9 @@
   mvn clean compile assembly:single
   cp target/release-test-jar-with-dependencies.jar target/release-test.jar
   
+  cp target/release-test.jar $HOME/release-test.jar
+  
   cd $HOME
-  # git config --global user.email "travis@travis-ci.org"
-  # git config --global user.name "travis-ci"
-  if  [ "$GH_TOKEN" == "" ]; then
-    echo "no token"
-  fi
   git clone --quiet "https://jartenmaa:${GH_TOKEN}@github.com/SzFMV2018-Tavasz/release-test" master > /dev/null
 
   cd master
