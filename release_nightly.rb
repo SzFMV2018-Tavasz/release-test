@@ -1,6 +1,10 @@
 require 'rest-client'
 require 'json'
 
+if ENV["TRAVIS_EVENT_TYPE"] != "cron" then
+    exit true
+end
+
 def create_release
     release_msg = "Nightly build based on #{$commit} at #{Time.now.strftime("%Y-%m-%d %H:%M:%S")}"
     response = JSON.parse(RestClient.post "https://api.github.com/repos/#{$owner}/#{$repo}/releases?access_token=#{$GH_TOKEN}", {tag_name: $tag, target_commitish: "master", name: "nightly", body: release_msg, draft: false, prerelease: true}.to_json)
