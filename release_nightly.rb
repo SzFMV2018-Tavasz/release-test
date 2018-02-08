@@ -14,7 +14,7 @@ end
 $owner = "SzFMV2018-Tavasz"
 $repo = "release-test"
 $tag = "nightly"
-$filename = ENV["HOME"] + "master/target/release-test.jar"
+$filename = ENV["HOME"] + "/master/target/release-test.jar"
 $filename_label="release-test.jar"
 $GH_TOKEN = ENV["GH_TOKEN"]
 $commit = %x(git log --format=%H -1) # this gives the full commit hash, %h is the short
