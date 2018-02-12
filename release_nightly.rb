@@ -20,7 +20,7 @@ $repo = "release-test"
 $tag = "nightly"
 $filename = "./target/release-test-jar-with-dependencies.jar"
 $filename_label="release-test.jar"
-$GH_TOKEN = ENV["GH_TOKEN"]
+$GH_TOKEN = ENV["GH_TOKEN"] # set through Travis
 $commit = %x(git log --format=%H -1) # this gives the full commit hash, %h is the short
 $user_email = ENV["USER_EMAIL"] # set through Travis
 $user_name = ENV["USER_NAME"] # set through Travis
