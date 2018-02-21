@@ -1,7 +1,12 @@
 # define language and JDK version, we use JAVA 8 and tha code should pass both with Oracle JDK and OpenJDK
 language: java
-jdk:
-  - openjdk8
+sudo: false
+matrix:
+  include:
+    - env: JDK_RELEASE='OracleJDK 8'
+      jdk: oraclejdk8
+    - env: JDK_RELEASE='OpenJDK 8'
+      jdk: openjdk8
 # Define OS image for TravisCI to use: Ubuntu 14.04 LTS (Trusty Tahr)
 dist: trusty
 # install necessary tools for code coverage reporters
