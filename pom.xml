@@ -12,9 +12,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-    
+
     <build>
-        <!--<finalName>release_test</finalName>-->
 
         <plugins>
             <!-- for creating single runnable jar -->
